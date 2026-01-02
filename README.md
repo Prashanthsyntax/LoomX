@@ -1,1 +1,1 @@
-# ⛓️LoomX: A Decentralized Marketplace for Everything
+# ⛓️LoomX – AI-Driven Decentralized Lending & Credit Scoring Platform
