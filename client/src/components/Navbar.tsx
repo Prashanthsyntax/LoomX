@@ -10,14 +10,14 @@ export default function Navbar() {
 
     return (
         <>
-            <motion.nav className="fixed top-0 z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
+            <motion.nav className="fixed top-0 z-50 flex items-center justify-between w-full py-2 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur"
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ type: "spring", stiffness: 250, damping: 70, mass: 1 }}
             >
-                <a href="https://prebuiltui.com?utm_source=pixels">
-                    <img className="h-8.5 w-auto" src="/assets/logo.svg" alt="logo" width={130} height={34} />
+                <a href="/">
+                    <img className="h-24 w-40" src="/assets/logo.svg" alt="logo" width={130} height={34} />
                 </a>
 
                 <div className="hidden md:flex items-center gap-8 transition duration-500">
