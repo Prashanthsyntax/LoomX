@@ -126,6 +126,8 @@ Deploy LoomXLending to the local Hardhat network:
 npx hardhat run scripts/deploy/LoomXLending.ts --network localhost
 ```
 
+![image](images/1.png)
+
 ## 13. Deployment Complete
 
 Once deployed successfully, the terminal will display:
