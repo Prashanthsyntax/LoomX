@@ -47,7 +47,7 @@ const Sidebar = () => {
       <div className="absolute bottom-6 w-full px-3">
         <NavLink
           to="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-lg text-white/60 hover:bg-white/5"
+          className="inline-flex items-center gap-3 px-12 py-3 rounded-lg text-white/60 hover:bg-white/5"
         >
           <ArrowLeft size={18} />
           Back to site
