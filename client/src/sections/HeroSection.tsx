@@ -77,7 +77,7 @@ export default function HeroSection() {
         transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
       >
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/auth")}
           className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-7 h-11 transition-colors duration-200"
         >
           Get started
