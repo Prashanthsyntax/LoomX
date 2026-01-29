@@ -1,4 +1,4 @@
-# LoomX Lending – Hardhat Setup & Deployment Guide
+# ⛓️LoomX Lending – Hardhat Setup & Deployment Guide
 
 This document explains the complete step-by-step procedure to set up the development environment, install dependencies, compile contracts, run tests, and deploy the `LoomXLending` smart contract using **Hardhat**.
 
