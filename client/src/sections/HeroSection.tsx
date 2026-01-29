@@ -42,15 +42,18 @@ export default function HeroSection() {
         </p>
       </motion.a>
       <motion.h1
-        className="text-5xl/17 md:text-6xl/21 font-medium max-w-2xl text-center"
+        className="text-4xl md:text-5xl lg:text-6xl font-medium text-center mx-auto leading-snug"
         initial={{ y: 50, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 240, damping: 70, mass: 1 }}
       >
-        Free template to start your{" "}
-        <span className="move-gradient px-3 rounded-xl text-nowrap">
-          Next.js site.
+        <span className="whitespace-nowrap block">AI-Driven Decentralized</span>
+        <span className="block">
+          Lending{" "}
+          <span className="move-gradient px-2 md:px-3 rounded-xl text-nowrap">
+            Platform.
+          </span>
         </span>
       </motion.h1>
       <motion.p
@@ -67,7 +70,7 @@ export default function HeroSection() {
         }}
       >
         No complexity. No noise. Just clean, reliable automation to boost your
-        team’s efficiency.
+        efficiency.
       </motion.p>
       <motion.div
         className="flex items-center gap-4 mt-8"

@@ -5,7 +5,7 @@ import {
   User,
   Activity,
   Settings,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 
 const links = [
@@ -13,15 +13,13 @@ const links = [
   { name: "Home", path: "/dashboard/home", icon: Home },
   { name: "Profile", path: "/dashboard/profile", icon: User },
   { name: "Activity", path: "/dashboard/activity", icon: Activity },
-  { name: "Settings", path: "/dashboard/settings", icon: Settings }
+  { name: "Settings", path: "/dashboard/settings", icon: Settings },
 ];
 
 const Sidebar = () => {
   return (
     <aside className="w-64 border-r border-white/10 bg-zinc-950">
-      <div className="px-6 py-5 text-xl font-semibold">
-        ⚡ LoomX
-      </div>
+      <div className="px-6 py-5 text-xl font-semibold">⚡ LoomX</div>
 
       <nav className="px-3 space-y-1">
         {links.map(({ name, path, icon: Icon }) => (
