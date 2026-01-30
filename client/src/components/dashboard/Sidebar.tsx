@@ -6,11 +6,13 @@ import {
   Activity,
   Settings,
   ArrowLeft,
+  BanknoteXIcon,
 } from "lucide-react";
 
 const links = [
   { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { name: "Home", path: "/dashboard/home", icon: Home },
+  { name: "Lending", path: "/dashboard/banking-op", icon: BanknoteXIcon },
   { name: "Profile", path: "/dashboard/profile", icon: User },
   { name: "Activity", path: "/dashboard/activity", icon: Activity },
   { name: "Settings", path: "/dashboard/settings", icon: Settings },
