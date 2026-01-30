@@ -135,3 +135,18 @@ Once deployed successfully, the terminal will display:
 - Deployer address
 - Contract address
 - Network information
+
+## 14. Test on the Console
+
+```bash
+PS C:\Users\prash\OneDrive\Documents\LoomX\blockchain> npx hardhat console --network localhost
+Welcome to Node.js v20.11.1.
+Type ".help" for more information.
+> let c = await ethers.getContractAt(
+...   "LoomXLending",
+...   "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+... );
+undefined
+> await c.getLoan("0x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f");
+Result(5) [ 0n, 10000000000000000000000000000000000n, 0n, true, false ]
+```

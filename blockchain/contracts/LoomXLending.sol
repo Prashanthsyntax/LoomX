@@ -1,11 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 contract LoomXLending {
 
-    // Loan structure
+    address public admin;
+
+    constructor() {
+        admin = msg.sender;
+    }
+
     struct Loan {
-        address borrower;
         uint loanAmount;
         uint interest;
         uint dueDate;
@@ -13,71 +17,63 @@ contract LoomXLending {
         bool repaid;
     }
 
-    // Store loans using borrower address
     mapping(address => Loan) public loans;
 
-    // Events (for frontend & logs)
-    event LoanRequested(address borrower, uint amount);
-    event LoanApproved(address borrower, uint amount);
-    event LoanRejected(address borrower);
-    event LoanRepaid(address borrower, uint amount);
+    event LoanRequested(address indexed borrower, uint amount);
+    event LoanApproved(address indexed borrower, uint amount);
+    event LoanRepaid(address indexed borrower, uint amount);
 
-    // Request a loan (called after AI prediction)
-    function requestLoan(
-        uint _amount,
-        uint _interest,
-        uint _durationInDays,
-        uint _creditScore
-    ) public {
+    modifier onlyAdmin() {
+        require(msg.sender == admin, "Not authorized");
+        _;
+    }
 
-        // Check AI credit score
-        require(_creditScore == 1, "Loan Rejected: Bad Credit Score");
+    // STEP 1: User requests loan (NO approval here)
+    function requestLoan(uint _amount, uint _durationInDays) external {
+        require(loans[msg.sender].loanAmount == 0, "Existing loan");
 
-        // Create loan
         loans[msg.sender] = Loan({
-            borrower: msg.sender,
             loanAmount: _amount,
-            interest: _interest,
+            interest: 0,
             dueDate: block.timestamp + (_durationInDays * 1 days),
-            approved: true,
+            approved: false,
             repaid: false
         });
 
-        emit LoanApproved(msg.sender, _amount);
+        emit LoanRequested(msg.sender, _amount);
     }
 
-    // Repay loan
-    function repayLoan() public payable {
+    // STEP 2: Backend approves loan (after AI check)
+    function approveLoan(
+        address _borrower,
+        uint _interest
+    ) external onlyAdmin {
+        Loan storage loan = loans[_borrower];
+        require(!loan.approved, "Already approved");
+
+        loan.interest = _interest;
+        loan.approved = true;
+
+        emit LoanApproved(_borrower, loan.loanAmount);
+    }
+
+    // STEP 3: Repay
+    function repayLoan() external payable {
         Loan storage loan = loans[msg.sender];
 
-        require(loan.approved, "Loan not approved");
-        require(!loan.repaid, "Loan already repaid");
-        require(msg.value >= loan.loanAmount + loan.interest, "Insufficient repayment");
+        require(loan.approved, "Not approved");
+        require(!loan.repaid, "Already repaid");
+        require(
+            msg.value >= loan.loanAmount + loan.interest,
+            "Insufficient amount"
+        );
 
         loan.repaid = true;
 
         emit LoanRepaid(msg.sender, msg.value);
     }
 
-    // View loan details
-    function getLoanDetails(address _borrower)
-        public
-        view
-        returns (
-            uint amount,
-            uint interest,
-            uint dueDate,
-            bool approved,
-            bool repaid
-        )
-    {
-        Loan memory loan = loans[_borrower];
-        return (
-            loan.loanAmount,
-            loan.interest,
-            loan.dueDate,
-            loan.approved,
-            loan.repaid
-        );
+    function getLoan(address user) external view returns (Loan memory) {
+        return loans[user];
     }
 }

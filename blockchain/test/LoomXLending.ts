@@ -2,58 +2,85 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("LoomXLending", function () {
+
   async function deployFixture() {
-    const [owner, borrower] = await ethers.getSigners();
+    const [admin, borrower] = await ethers.getSigners();
 
     const LoomXLending = await ethers.getContractFactory("LoomXLending");
     const lending = await LoomXLending.deploy();
     await lending.waitForDeployment();
 
-    return { lending, owner, borrower };
+    return { lending, admin, borrower };
   }
 
-  it("should approve loan if credit score is good", async function () {
+  it("should allow user to request a loan", async function () {
     const { lending, borrower } = await deployFixture();
 
-    await (lending as any).connect(borrower).requestLoan(
+    await lending.connect(borrower).requestLoan(
       ethers.parseEther("1"),
-      ethers.parseEther("0.1"),
-      30,
-      1
+      30
     );
 
-    const loan = await (lending as any).loans(borrower.address);
-    expect(loan[4]).to.equal(true); // approved
+    const loan = await lending.loans(borrower.address);
+
+    expect(loan.loanAmount).to.equal(ethers.parseEther("1"));
+    expect(loan.approved).to.equal(false);
+    expect(loan.repaid).to.equal(false);
   });
 
-  it("should reject loan if credit score is bad", async function () {
-    const { lending, borrower } = await deployFixture();
+  it("should allow admin to approve loan", async function () {
+    const { lending, admin, borrower } = await deployFixture();
 
-    await expect(
-      (lending as any).connect(borrower).requestLoan(
-        ethers.parseEther("1"),
-        ethers.parseEther("0.1"),
-        30,
-        0
-      )
-    ).to.be.revertedWith("Loan Rejected: Bad Credit Score");
-  });
-
-  it("should allow loan repayment", async function () {
-    const { lending, borrower } = await deployFixture();
-
-    await (lending as any).connect(borrower).requestLoan(
+    await lending.connect(borrower).requestLoan(
       ethers.parseEther("1"),
-      ethers.parseEther("0.1"),
-      30,
-      1
+      30
     );
 
-    await (lending as any).connect(borrower).repayLoan({
+    await lending.connect(admin).approveLoan(
+      borrower.address,
+      ethers.parseEther("0.1")
+    );
+
+    const loan = await lending.loans(borrower.address);
+
+    expect(loan.approved).to.equal(true);
+    expect(loan.interest).to.equal(ethers.parseEther("0.1"));
+  });
+
+  it("should allow borrower to repay loan", async function () {
+    const { lending, admin, borrower } = await deployFixture();
+
+    await lending.connect(borrower).requestLoan(
+      ethers.parseEther("1"),
+      30
+    );
+
+    await lending.connect(admin).approveLoan(
+      borrower.address,
+      ethers.parseEther("0.1")
+    );
+
+    await lending.connect(borrower).repayLoan({
       value: ethers.parseEther("1.1"),
     });
 
-    const loan = await (lending as any).loans(borrower.address);
-    expect(loan[5]).to.equal(true); // repaid
+    const loan = await lending.loans(borrower.address);
+    expect(loan.repaid).to.equal(true);
+  });
+
+  it("should reject non-admin approval", async function () {
+    const { lending, borrower } = await deployFixture();
+
+    await lending.connect(borrower).requestLoan(
+      ethers.parseEther("1"),
+      30
+    );
+
+    await expect(
+      lending.connect(borrower).approveLoan(
+        borrower.address,
+        ethers.parseEther("0.1")
+      )
+    ).to.be.revertedWith("Not authorized");
   });
 });
