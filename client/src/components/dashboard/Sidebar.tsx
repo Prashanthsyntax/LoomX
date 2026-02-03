@@ -21,7 +21,6 @@ const links = [
 const Sidebar = () => {
   return (
     <aside className="w-64 border-r border-white/10 bg-zinc-950 flex flex-col h-screen justify-between">
-      
       {/* Logo */}
       <div className="px-6 py-5 text-xl font-semibold text-white">⚡ LoomX</div>
 
@@ -47,13 +46,15 @@ const Sidebar = () => {
       </nav>
 
       {/* Sticky Profile Section */}
-      <div className="px-4 py-5 bg-zinc-950 border-t border-white/5 flex items-center gap-3 rounded-t-xl hover:bg-white/5 transition cursor-pointer">
-        <User size={24} className="text-white/80" />
-        <div className="flex-1">
-          <p className="text-white/80 font-semibold text-sm">Greedy Geeks</p>
-          <p className="text-white/50 text-xs">Ethereum</p>
+      <NavLink to="/dashboard/profile">
+        <div className="px-4 py-5 bg-zinc-950 border-t border-white/5 flex items-center gap-3 rounded-t-xl hover:bg-white/5 transition cursor-pointer">
+          <User size={24} className="text-white/80" />
+          <div className="flex-1">
+            <p className="text-white/80 font-semibold text-sm">Greedy Geeks</p>
+            <p className="text-white/50 text-xs">Ethereum</p>
+          </div>
         </div>
-      </div>
+      </NavLink>
     </aside>
   );
 };

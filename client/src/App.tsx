@@ -15,6 +15,7 @@ import { AuthProvider } from "./auth/AuthProvider";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import BankingOp from "./pages/dashboard/BankingOp";
 import Market from "./pages/dashboard/Market";
+import Profile from "./pages/dashboard/Profile";
 
 export default function App() {
   return (
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/dashboard/market" element={<Market />} />
           <Route path="/dashboard/activity" element={<Activity />} />
           <Route path="/dashboard/settings" element={<Settings />} />
+          <Route path="/dashboard/profile" element={<Profile />} />
         </Route>
       </Routes>
     </AuthProvider>
