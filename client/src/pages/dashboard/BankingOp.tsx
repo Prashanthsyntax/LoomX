@@ -1,234 +1,192 @@
 import { useState } from "react";
-import { ArrowUpRight, Wallet, TrendingUp, ShieldCheck } from "lucide-react";
+import { ShieldCheck, Wallet, TrendingUp } from "lucide-react";
 
-export default function BankingOp() {
-  const [borrower, setBorrower] = useState("");
-  const [interest, setInterest] = useState("");
+type AIResult = {
+  eligible: boolean;
+  score: number;
+  risk: string;
+  reason?: string;
+};
+
+export default function LendingDashboard() {
+  const [form, setForm] = useState({
+    borrowerAddress: "",
+    age: "",
+    income: "",
+    employmentYears: "",
+    loanAmount: "",
+    interestRate: "",
+    creditHistoryYears: "",
+  });
+
+  const [aiResult, setAiResult] = useState<AIResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const approveLoan = async () => {
-    if (!borrower || !interest) {
-      setMessage("⚠️ Fill all fields");
-      return;
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const checkEligibility = async () => {
+    setLoading(true);
+    setMessage("");
+    setAiResult(null);
 
     try {
-      setLoading(true);
-      setMessage("");
-
-      const res = await fetch("http://localhost:5000/api/loan/approve-loan", {
+      const res = await fetch("http://localhost:5000/api/ai/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ borrower, interest }),
+        body: JSON.stringify({
+          person_age: Number(form.age),
+          person_income: Number(form.income),
+          person_emp_length: Number(form.employmentYears),
+          loan_amnt: Number(form.loanAmount),
+          loan_int_rate: Number(form.interestRate),
+          cb_person_cred_hist_length: Number(form.creditHistoryYears),
+          borrower: form.borrowerAddress,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
-      setMessage("✅ Loan approved successfully");
+      setAiResult(data);
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Something went wrong");
+      setMessage(err instanceof Error ? err.message : "AI evaluation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const approveLoan = async () => {
+    if (!aiResult?.eligible) return;
+
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const res = await fetch("http://localhost:4000/api/loan/approve-loan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          borrower: form.borrowerAddress,
+          interest: Number(form.interestRate),
+          aiScore: aiResult.score,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error);
+
+      setMessage(`✅ Loan approved on-chain! Tx: ${data.txHash}`);
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Loan approval failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen text-white px-6 py-6">
+    <div className="min-h-screen text-white p-8 space-y-8">
       {/* Top Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatCard
-          title="ETH Earnings"
-          value="$11,600"
-          sub="+6.7% (30d)"
-          icon={<TrendingUp />}
-        />
-        <StatCard
-          title="USDC Yield"
-          value="8.3%"
-          sub="Stable returns"
-          icon={<Wallet />}
-        />
-        <StatCard
-          title="Total Value"
-          value="$16,900"
-          sub="+0.52 ETH"
-          icon={<ArrowUpRight />}
-        />
+      <div className="grid md:grid-cols-3 gap-6">
+        <Stat title="Total Liquidity" value="16.9 ETH" icon={<Wallet />} />
+        <Stat title="Average APY" value="5.9%" icon={<TrendingUp />} />
+        <Stat title="Platform Risk" value="Low" icon={<ShieldCheck />} />
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Utilization */}
-        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-xl p-6">
-          <h2 className="text-lg font-medium mb-4">Utilization</h2>
+      {/* Loan Application */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+        <h2 className="text-lg font-semibold mb-4">Loan Application</h2>
 
-          <div className="h-40 flex items-end gap-1">
-            {Array.from({ length: 30 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-full bg-gradient-to-t from-emerald-500/40 to-emerald-500 rounded-sm"
-                style={{ height: `${40 + Math.random() * 60}%` }}
-              />
-            ))}
-          </div>
-
-          <p className="text-white/50 text-xs mt-3">
-            ETH Pool utilization ~82%
-          </p>
-        </div>
-
-        {/* Risk / Stats */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6 space-y-5">
-          <h2 className="text-lg font-medium">Quick Stats</h2>
-
-          <StatRow label="AI Lending Score" value="830 / 900" />
-          <StatRow label="Risk Exposure" value="Low" />
-          <StatRow label="Liquidity Buffer" value="2.4x Safe" />
-
-          <button className="w-full py-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
-            View Analytics
-          </button>
-        </div>
-
-        {/* Active Loan */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-          <h2 className="text-lg font-medium mb-4">Active Lends</h2>
-
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white/70">5.4 ETH Supplied</span>
-            <span className="text-emerald-400">$17,100</span>
-          </div>
-
-          {/* Utilization */}
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full w-[70%] bg-emerald-500" />
-          </div>
-
-          <div className="mt-3 flex justify-between text-xs text-white/50">
-            <span>Utilization</span>
-            <span>70%</span>
-          </div>
-
-          {/* Earnings */}
-          <div className="mt-4 flex justify-between text-sm">
-            <div>
-              <p className="text-white/50 text-xs">APY</p>
-              <p className="text-white font-medium">5.9%</p>
-            </div>
-            <div className="text-right">
-              <p className="text-white/50 text-xs">Earnings (30d)</p>
-              <p className="text-emerald-400 font-medium">+0.32 ETH</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Approve Loan */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-          <h2 className="text-lg font-medium mb-4">Approve Loan</h2>
-
-          <div className="space-y-4">
+        <div className="grid md:grid-cols-3 gap-4">
+          {[
+            ["borrowerAddress", "Borrower Address"],
+            ["age", "Age"],
+            ["income", "Annual Income"],
+            ["employmentYears", "Employment (Years)"],
+            ["loanAmount", "Loan Amount"],
+            ["interestRate", "Interest Rate (%)"],
+            ["creditHistoryYears", "Credit History (Years)"],
+          ].map(([name, label]) => (
             <input
-              type="text"
-              placeholder="Borrower Address"
-              value={borrower}
-              onChange={(e) => setBorrower(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-black border border-white/10 focus:border-white/30 outline-none"
+              key={name}
+              name={name}
+              placeholder={label}
+              value={(form as any)[name]}
+              onChange={handleChange}
+              className="px-4 py-3 rounded-lg bg-black border border-white/10"
             />
+          ))}
+        </div>
 
-            <input
-              type="number"
-              placeholder="Interest (ETH)"
-              value={interest}
-              onChange={(e) => setInterest(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-black border border-white/10 focus:border-white/30 outline-none"
+        <button
+          onClick={checkEligibility}
+          disabled={loading}
+          className="mt-5 px-6 py-3 bg-emerald-500 text-black rounded-lg font-medium"
+        >
+          {loading ? "Evaluating..." : "Check AI Eligibility"}
+        </button>
+      </div>
+
+      {/* AI Result */}
+      {aiResult && (
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+          <h2 className="text-lg font-semibold mb-3">AI Credit Decision</h2>
+
+          <div className="grid md:grid-cols-3 gap-4 text-sm">
+            <Result label="Credit Score" value={aiResult.score} />
+            <Result label="Risk Level" value={aiResult.risk} />
+            <Result
+              label="Status"
+              value={aiResult.eligible ? "Eligible" : "Rejected"}
             />
+          </div>
 
+          {!aiResult.eligible && (
+            <p className="mt-3 text-red-400 text-sm">
+              ❌ {aiResult.reason || "High default risk"}
+            </p>
+          )}
+
+          {aiResult.eligible && (
             <button
               onClick={approveLoan}
-              disabled={loading}
-              className="w-full py-3 rounded-lg bg-emerald-500 text-black font-medium hover:bg-emerald-400 transition disabled:opacity-50"
+              className="mt-5 px-6 py-3 bg-emerald-500 text-black rounded-lg font-medium"
             >
-              {loading ? "Processing..." : "Approve Loan"}
+              Approve Loan
             </button>
-
-            {message && (
-              <p className="text-sm text-center text-white/70">{message}</p>
-            )}
-          </div>
+          )}
         </div>
+      )}
 
-        {/* Eligibility */}
-        <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-          <h2 className="text-lg font-medium mb-4">Lend Assets</h2>
-
-          <div className="flex items-center gap-3 mb-3">
-            <ShieldCheck className="text-emerald-400" />
-            <span className="text-white/80">ETH Pool • APY 5.9%</span>
-          </div>
-
-          {/* Pool Utilization */}
-          <div className="mb-2 flex justify-between text-xs text-white/50">
-            <span>Pool Utilization</span>
-            <span>70%</span>
-          </div>
-
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full w-[70%] bg-emerald-500" />
-          </div>
-
-          {/* Stats */}
-          <div className="mt-4 flex justify-between text-sm">
-            <div>
-              <p className="text-white/50 text-xs">Deposited</p>
-              <p className="text-white font-medium">5.4 ETH</p>
-            </div>
-            <div className="text-right">
-              <p className="text-white/50 text-xs">Risk</p>
-              <p className="text-emerald-400 font-medium">Low</p>
-            </div>
-          </div>
-
-          <button className="mt-5 w-full py-2.5 rounded-lg bg-emerald-500 text-black font-medium hover:bg-emerald-400 transition">
-            Deposit / Lend
-          </button>
-        </div>
-      </div>
+      {message && (
+        <p className="text-center text-sm text-white/70">{message}</p>
+      )}
     </div>
   );
 }
 
-/* ---------- Reusable Components ---------- */
+/* ---------- Components ---------- */
 
-function StatCard({
-  title,
-  value,
-  sub,
-  icon,
-}: {
-  title: string;
-  value: string;
-  sub: string;
-  icon: React.ReactNode;
-}) {
+function Stat({ title, value, icon }: any) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-5 flex items-center gap-4">
-      <div className="p-3 rounded-lg bg-white/10">{icon}</div>
+    <div className="bg-white/5 border border-white/10 rounded-xl p-5 flex gap-4">
+      <div className="p-3 bg-white/10 rounded-lg">{icon}</div>
       <div>
         <p className="text-white/60 text-sm">{title}</p>
         <p className="text-xl font-semibold">{value}</p>
-        <p className="text-emerald-400 text-xs">{sub}</p>
       </div>
     </div>
   );
 }
 
-function StatRow({ label, value }: { label: string; value: string }) {
+function Result({ label, value }: any) {
   return (
-    <div className="flex items-center justify-between text-sm">
-      <span className="text-white/60">{label}</span>
-      <span className="text-white">{value}</span>
+    <div className="bg-black/40 p-4 rounded-lg">
+      <p className="text-white/60 text-xs">{label}</p>
+      <p className="text-white font-medium">{value}</p>
     </div>
   );
 }
