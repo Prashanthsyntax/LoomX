@@ -13,6 +13,7 @@ const links = [
   { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { name: "Portfolio", path: "/dashboard/portfolio", icon: BarChart2 },
   { name: "Lending", path: "/dashboard/banking-op", icon: BanknoteXIcon },
+  { name: "AI Advisor", path: "/dashboard/aiadvisor", icon: User },
   { name: "Market", path: "/dashboard/market", icon: BadgeEuro },
   { name: "Activity", path: "/dashboard/activity", icon: Activity },
   { name: "Settings", path: "/dashboard/settings", icon: Settings },
