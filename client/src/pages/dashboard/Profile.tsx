@@ -4,12 +4,22 @@ import {
   TrendingUp,
   TrendingDown,
   ArrowUpRight,
+  LogOut,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../auth/AuthProvider";
 
 export default function Profile() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen text-white px-6 py-6 space-y-6">
-
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -41,7 +51,6 @@ export default function Profile() {
 
       {/* POSITIONS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
         {/* SUPPLIED */}
         <PositionCard
           title="Supplied Assets"
@@ -61,6 +70,17 @@ export default function Profile() {
           action="Repay"
           danger
         />
+      </div>
+
+      {/* LOGOUT BUTTON INSIDE PAGE */}
+      <div className="mt-auto">
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-black border border-white/10 hover:bg-white/5 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-300"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
       </div>
     </div>
   );
@@ -86,11 +106,7 @@ function StatCard({
       <p className="text-xs text-white/50 mb-1">{title}</p>
       <div
         className={`text-lg font-semibold ${
-          positive
-            ? "text-emerald-400"
-            : highlight
-            ? "text-orange-400"
-            : ""
+          positive ? "text-emerald-400" : highlight ? "text-orange-400" : ""
         }`}
       >
         {value}
@@ -122,10 +138,7 @@ function PositionCard({
 
       <div className="space-y-3">
         {items.map((item) => (
-          <div
-            key={item.symbol}
-            className="flex items-center justify-between"
-          >
+          <div key={item.symbol} className="flex items-center justify-between">
             <div>
               <p className="font-medium">{item.name}</p>
               <p className="text-xs text-white/50">{item.symbol}</p>
