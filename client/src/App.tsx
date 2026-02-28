@@ -11,12 +11,13 @@ import Activity from "./pages/dashboard/Activity";
 import Settings from "./pages/dashboard/Settings";
 import AuthPage from "./pages/auth/AuthPage";
 
-import { AuthProvider } from "./auth/AuthProvider";
-import ProtectedRoute from "./auth/ProtectedRoute";
+
 import BankingOp from "./pages/dashboard/BankingOp";
 import Market from "./pages/dashboard/Market";
 import Profile from "./pages/dashboard/Profile";
 import AICreditAdvisor from "./pages/dashboard/AICreditAdvisor";
+import { AuthProvider } from "./auth/AuthProvider";
+import ProtectedRoute from "./auth/ProtectedRoute";
 
 export default function App() {
   return (

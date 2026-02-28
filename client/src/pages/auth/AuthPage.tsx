@@ -8,22 +8,54 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    login();
-    navigate("/dashboard");
+  const handleLogin = async () => {
+    try {
+      if (!email || !password) {
+        alert("Please enter email and password");
+        return;
+      }
+
+      setLoading(true);
+
+      const response = await fetch(
+        "http://localhost:4000/api/users/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        setLoading(false);
+        return;
+      }
+
+      login(data.user, data.token);
+      navigate("/dashboard");
+
+    } catch (error) {
+      console.error(error);
+      alert("Server error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="relative min-h-screen bg-black flex items-center justify-center text-white overflow-hidden">
-      
-      {/* Ambient glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(236,72,153,0.15),_transparent_60%)]" />
 
-      {/* Card */}
       <div className="relative w-full max-w-md p-8 rounded-2xl bg-zinc-950/80 backdrop-blur-xl border border-white/10 shadow-[0_0_60px_rgba(236,72,153,0.15)] space-y-6">
-        
-        {/* Header */}
         <div className="space-y-1">
           <h1 className="text-3xl font-semibold tracking-tight">
             Welcome back
@@ -37,24 +69,24 @@ const AuthPage = () => {
         <div className="space-y-2">
           <label className="text-sm text-white/60">Email</label>
           <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full px-4 h-11 rounded-lg bg-zinc-900 border border-white/10 outline-none
-            focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition"
+            className="w-full px-4 h-11 rounded-lg bg-zinc-900 border border-white/10 outline-none focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition"
           />
         </div>
 
         {/* Password */}
         <div className="space-y-2">
           <label className="text-sm text-white/60">Password</label>
-
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-4 h-11 rounded-lg bg-zinc-900 border border-white/10 outline-none
-              focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition pr-10"
+              className="w-full px-4 h-11 rounded-lg bg-zinc-900 border border-white/10 outline-none focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition pr-10"
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -65,24 +97,17 @@ const AuthPage = () => {
           </div>
         </div>
 
-        {/* CTA */}
+        {/* Button */}
         <button
           onClick={handleLogin}
-          className="group w-full h-11 rounded-full bg-pink-600 hover:bg-pink-700
-          transition-all duration-300 flex items-center justify-center gap-2
-          hover:shadow-[0_0_30px_rgba(236,72,153,0.6)] active:scale-95"
+          disabled={loading}
+          className="group w-full h-11 rounded-full bg-pink-600 hover:bg-pink-700 transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-60"
         >
-          Continue
-          <ArrowRight
-            size={16}
-            className="group-hover:translate-x-1 transition"
-          />
+          {loading ? "Signing in..." : "Continue"}
+          {!loading && (
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition" />
+          )}
         </button>
-
-        {/* Footer */}
-        <p className="text-xs text-center text-white/40">
-          By continuing, you agree to our Terms & Privacy Policy
-        </p>
       </div>
     </div>
   );
