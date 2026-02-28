@@ -41,7 +41,7 @@ export default function App() {
         >
           <Route path="/dashboard" element={<DashboardHome />} />
           <Route path="/dashboard/portfolio" element={<Portfolio />} />
-          <Route path="/dashboard/banking-op" element={<BankingOp />} />
+          <Route path="/dashboard/banking-op" element={<BankingOp currentUser={"BankAI"} />} />
           <Route path="/dashboard/aiadvisor" element={<AICreditAdvisor />} />
           <Route path="/dashboard/market" element={<Market />} />
           <Route path="/dashboard/activity" element={<Activity />} />

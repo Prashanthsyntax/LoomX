@@ -34,3 +34,7 @@ button {
         background-position: 0% 50%;
     }
 }
+
+.input-field {
+  @apply border p-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
