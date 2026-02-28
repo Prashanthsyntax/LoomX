@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-// API Layer to fetch AI response
-const [response, setResponse] = useState("");
-
-useEffect(() => {
-  fetch("http://127.0.0.1:8000/ai-advisor", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question: "Analyze my score" })
-  })
-    .then(res => res.json())
-    .then(data => {
-      setResponse(data.answer);
-    });
-}, []);
-
 const AICreditAdvisor = () => {
+  // API Layer to fetch AI response
+  const [response, setResponse] = useState("");
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/ai-advisor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: "Analyze my score" }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setResponse(data.answer);
+      });
+  }, []);
+
   const [displayedText, setDisplayedText] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -51,10 +51,7 @@ const AICreditAdvisor = () => {
 
       if (line.startsWith("## ")) {
         return (
-          <h2
-            key={i}
-            className="text-xl font-semibold mt-5 mb-2 text-gray-300"
-          >
+          <h2 key={i} className="text-xl font-semibold mt-5 mb-2 text-gray-300">
             {line.replace("## ", "")}
           </h2>
         );
@@ -115,7 +112,9 @@ const AICreditAdvisor = () => {
         )}
 
         {/* AI Response */}
-        <div className="prose prose-invert max-w-none">{formatText(displayedText)}</div>
+        <div className="prose prose-invert max-w-none">
+          {formatText(displayedText)}
+        </div>
       </motion.div>
     </div>
   );
