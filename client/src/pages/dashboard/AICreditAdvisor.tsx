@@ -1,21 +1,45 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const AICreditAdvisor = () => {
-  // API Layer to fetch AI response
-  const [response, setResponse] = useState("");
+const staticResponse = `
+# Credit Score Explanation
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/ai-advisor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: "Analyze my score" }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setResponse(data.answer);
-      });
-  }, []);
+Your current credit score is 620, which falls into the Fair category.
+
+## Score Breakdown
+
+• Payment History (35%): Two late payments impacting score.
+• Credit Utilization (30%): 78% utilization is high.
+• Length of History (15%): Short credit age.
+• Credit Mix (10%): Limited account diversity.
+
+## Actionable Steps
+
+1. Pay off late payments immediately.
+2. Reduce utilization below 30%.
+3. Make all future payments on time.
+4. Avoid unnecessary credit inquiries.
+
+## Estimated Impact
+
+You may improve your score by 80–170 points within 3–6 months.
+`;
+
+const AICreditAdvisor = () => {
+  // // API Layer to fetch AI response
+  // const [response, setResponse] = useState("");
+
+  // useEffect(() => {
+  //   fetch("http://127.0.0.1:8000/ai-advisor", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ question: "Analyze my score" }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setResponse(data.answer);
+  //     });
+  // }, []);
 
   const [displayedText, setDisplayedText] = useState("");
   const [loading, setLoading] = useState(true);
@@ -25,9 +49,9 @@ const AICreditAdvisor = () => {
     const speed = 15;
 
     const typeEffect = setInterval(() => {
-      setDisplayedText(response.slice(0, index));
+      setDisplayedText(staticResponse.slice(0, index));
       index++;
-      if (index > response.length) {
+      if (index > staticResponse.length) {
         clearInterval(typeEffect);
         setLoading(false);
       }
