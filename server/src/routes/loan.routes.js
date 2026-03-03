@@ -77,47 +77,41 @@ router.get("/requests", async (req, res) => {
 });
 
 // 🧠 Check AI Eligibility
+// POST /api/loan/:id/check-ai
+// POST /api/loan/:id/check-ai
 router.post("/:id/check-ai", async (req, res) => {
   try {
     const loan = await Loan.findById(req.params.id);
-
-    if (!loan) {
-      return res.status(404).json({ message: "Loan not found" });
-    }
+    if (!loan) return res.status(404).json({ message: "Loan not found" });
 
     loan.status = "ai_review";
     await loan.save();
 
-    // 🔥 Call FastAPI
-    const aiResponse = await axios.post(
-      "http://localhost:8000/predict",
-      {
-        person_age: loan.person_age,
-        person_income: loan.person_income,
-        person_home_ownership: loan.person_home_ownership,
-        person_emp_length: loan.person_emp_length,
-        loan_intent: loan.loan_intent,
-        loan_grade: loan.loan_grade,
-        loan_amnt: loan.amount,
-        loan_int_rate: loan.loan_int_rate,
-        loan_percent_income: loan.loan_percent_income,
-        cb_person_default_on_file: loan.cb_person_default_on_file,
-        cb_person_cred_hist_length: loan.cb_person_cred_hist_length,
-      }
-    );
+    // 🔥 Call Flask AI model
+    const aiResponse = await axios.post("http://localhost:5000/api/ai/predict", {
+      person_age: loan.person_age,
+      person_income: loan.person_income,
+      person_home_ownership: loan.person_home_ownership,
+      person_emp_length: loan.person_emp_length,
+      loan_intent: loan.loan_intent,
+      loan_grade: loan.loan_grade,
+      loan_amnt: loan.loan_amnt,
+      loan_int_rate: loan.loan_int_rate,
+      loan_percent_income: loan.loan_percent_income,
+      cb_person_default_on_file: loan.cb_person_default_on_file,
+      cb_person_cred_hist_length: loan.cb_person_cred_hist_length,
+    });
 
+    // Update loan with AI decision
     loan.aiDecision = aiResponse.data.decision;
     loan.aiRiskScore = aiResponse.data.risk_score;
-
-    loan.status =
-      aiResponse.data.decision === "approved"
-        ? "approved"
-        : "rejected";
+    loan.status = aiResponse.data.decision === "approved" ? "approved" : "rejected";
 
     await loan.save();
 
     res.json(loan);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });

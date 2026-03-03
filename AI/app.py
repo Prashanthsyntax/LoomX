@@ -73,15 +73,15 @@ def predict():
     # --------------------------------------------------
     # 6. Decision Logic (Conservative Ensemble)
     # --------------------------------------------------
-    eligible = (log_pred == 0 and xgb_pred == 0)
 
+    eligible = (log_pred == 0 and xgb_pred == 0)
     score = 850 if eligible else 520
-    risk = "Low" if eligible else "High"
+    decision = "approved" if eligible else "rejected"
 
     response = {
-        "eligible": bool(eligible),
-        "score": score,
-        "risk": risk,
+        "decision": decision,        # approved / rejected
+        "risk_score": score,         # numeric score
+        "risk": "SAFE" if eligible else "RISKY",
         "reason": None if eligible else "High default probability detected by AI"
     }
 
