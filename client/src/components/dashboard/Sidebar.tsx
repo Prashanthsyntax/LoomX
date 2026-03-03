@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Activity,
@@ -20,10 +20,17 @@ const links = [
 ];
 
 const Sidebar = () => {
+
+  const navigate = useNavigate();
   return (
     <aside className="w-64 border-r border-white/10 bg-zinc-950 flex flex-col h-screen justify-between">
       {/* Logo */}
-      <div className="px-6 py-5 text-xl font-semibold text-white">⚡ LoomX</div>
+      <div
+      className="px-6 py-5 text-xl font-semibold text-white cursor-pointer"
+      onClick={() => navigate("/dashboard")}
+    >
+      ⚡ LoomX
+    </div>
 
       {/* Navigation */}
       <nav className="px-3 space-y-1 flex-1 overflow-y-auto">
