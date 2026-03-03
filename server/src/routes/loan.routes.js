@@ -39,13 +39,40 @@ router.post("/approve-loan", async (req, res) => {
   }
 });
 
-// 🟢 Apply Loan
+// Apply Loan
 router.post("/apply", async (req, res) => {
   try {
-    const loan = await Loan.create(req.body);
-    res.status(201).json(loan);
+    const { toUserEmail, customerData } = req.body;
+
+    const loan = await Loan.create({
+      borrowerEmail: "borrower@test.com",   // ✅ temporary fix
+      lenderEmail: toUserEmail,
+      ...customerData,
+      status: "pending"
+    });
+
+    res.status(201).json({
+      message: "Loan application submitted successfully",
+      loan
+    });
+
   } catch (error) {
+    console.error("Apply Loan Error:", error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+
+router.get("/requests", async (req, res) => {
+  try {
+    const loans = await Loan.find({
+      lenderEmail: "greedygeeks@gmail.com",
+    }).sort({ createdAt: -1 });
+
+    res.json(loans);
+  } catch (error) {
+    console.error("Fetch Requests Error:", error);
+    res.status(500).json({ message: "Error fetching requests" });
   }
 });
 

@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",
     "@wagmi/connectors": "^7.1.5",
+    "axios": "^1.13.6",
     "chart.js": "^4.5.1",
     "d3": "^7.9.0",
     "framer-motion": "^12.29.2",
