@@ -88,7 +88,7 @@ router.post("/:id/check-ai", async (req, res) => {
     await loan.save();
 
     // 🔥 Call Flask AI model
-    const aiResponse = await axios.post("http://localhost:5000/api/ai/predict", {
+    const aiResponse = await axios.post("http://127.0.0.1:5000/api/ai/predict", {
       person_age: loan.person_age,
       person_income: loan.person_income,
       person_home_ownership: loan.person_home_ownership,
