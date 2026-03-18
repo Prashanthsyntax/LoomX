@@ -22,7 +22,7 @@ const AuthPage = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:4000/api/users/login",
+        "http://localhost:5001/api/users/login",
         {
           method: "POST",
           headers: {
