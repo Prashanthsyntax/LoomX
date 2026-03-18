@@ -4,6 +4,10 @@ LoomX is a full-stack application that evaluates loan applications using an AI m
 
 ![Hero Image](images/Hero.png)
 
+**Dashboard***
+
+![Dashboard](images/dashboard.png)
+
 ---
 
 ## 🧠 Tech Stack
