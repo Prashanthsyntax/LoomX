@@ -30,7 +30,7 @@ const RequestForm: React.FC = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/loan/requests");
+        const res = await axios.get("http://localhost:5001/api/loan/requests");
         setRequests(res.data);
       } catch (error) {
         console.error("Error fetching requests:", error);
@@ -45,7 +45,7 @@ const RequestForm: React.FC = () => {
     try {
       setProcessingId(loanId);
       const res = await axios.post(
-        `http://localhost:4000/api/loan/${loanId}/check-ai`
+        `http://localhost:5001/api/loan/${loanId}/check-ai`
       );
       const updatedLoan: LoanRequest = res.data;
 
@@ -78,7 +78,7 @@ const RequestForm: React.FC = () => {
 
     try {
       setProcessingId(loan._id);
-      const res = await axios.post("http://localhost:4000/api/loan/approve-loan", {
+      const res = await axios.post("http://localhost:5001/api/loan/approve-loan", {
         borrower: loan.borrowerEmail,
         interest: loan.loan_int_rate,
         aiScore: loan.aiRiskScore,

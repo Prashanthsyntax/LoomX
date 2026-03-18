@@ -6,12 +6,14 @@ exports.checkAI = async (req, res) => {
   try {
     const loan = await Loan.findById(req.params.loanId);
 
+    const AI_API_URL = process.env.AI_API_URL;
+
     if (!loan)
       return res.status(404).json({ message: "Loan not found" });
 
     // 🔥 Call Flask AI Server
     const response = await axios.post(
-      "http://localhost:5000/api/ai/predict",
+      `${AI_API_URL}/api/ai/predict`,
       loan.customerData
     );
 
