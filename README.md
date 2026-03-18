@@ -29,6 +29,11 @@ LoomX is a full-stack application that evaluates loan applications using an AI m
 * Python (Flask)
 * XGBoost Model
 
+## 🔹 AI Advisor
+
+* Ollama Powered
+* Llama3.2:latest model
+
 ---
 
 ## 📁 Project Structure
