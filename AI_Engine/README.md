@@ -3,7 +3,8 @@
 ![alt text](<AI.png>)
 
 ## Folder Structure
-```
+
+```bash
 your-project/
 ├── AI_Engine/
 │   ├── server.js       ← backend (copy from output)
@@ -15,7 +16,9 @@ your-project/
 ---
 
 ## Step 1 — Start Ollama
+
 Make sure Ollama is running with llama3.2:
+
 ```bash
 ollama serve
 ollama pull llama3.2:latest   # if not already pulled
@@ -24,6 +27,7 @@ ollama pull llama3.2:latest   # if not already pulled
 ---
 
 ## Step 2 — Start AI_Engine backend
+
 ```bash
 cd AI_Engine
 npm install
@@ -34,6 +38,7 @@ npm start
 ---
 
 ## Step 3 — Use LoomXChat.jsx in your React app
+
 ```bash
 # In your React project (Vite, CRA, Next.js etc.)
 # Copy LoomXChat.jsx to src/
@@ -45,12 +50,14 @@ export default function App() { return <LoomXChat />; }
 ---
 
 ## API Endpoints (AI_Engine)
+
 | Method | Path     | Description              |
 |--------|----------|--------------------------|
 | GET    | /health  | Check Ollama connection  |
 | POST   | /chat    | Streaming SSE chat       |
 
-### POST /chat body:
+### POST /chat body
+
 ```json
 {
   "model": "llama3.2:latest",
@@ -60,8 +67,9 @@ export default function App() { return <LoomXChat />; }
 }
 ```
 
-### SSE Stream response:
-```
+### SSE Stream response
+
+```bash
 data: {"token": "Hello", "done": false}
 data: {"token": " there", "done": false}
 data: {"token": "", "done": true}
