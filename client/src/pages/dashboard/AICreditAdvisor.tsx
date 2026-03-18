@@ -364,7 +364,6 @@ function Suggestions({ onSelect }: SuggestionsProps) {
   const suggestions = [
     "Explain what a credit score is in simple terms",
     "How can I improve my credit score quickly?",
-    // "What factors affect my credit score the most?",
     "What is a good credit score range and why does it matter?",
     "Tips to maintain a high credit score over time",
   ];
