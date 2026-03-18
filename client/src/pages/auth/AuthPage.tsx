@@ -12,6 +12,8 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleLogin = async () => {
     try {
       if (!email || !password) {
@@ -22,7 +24,7 @@ const AuthPage = () => {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5001/api/users/login",
+        `${API_URL}/api/users/login`,
         {
           method: "POST",
           headers: {
