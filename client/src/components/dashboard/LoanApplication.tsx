@@ -31,6 +31,15 @@ const LoanApplication: React.FC<Props> = ({}) => {
     setForm({ ...form, [name]: isNaN(Number(value)) ? value : Number(value) });
   };
 
+  const handleChange1 = (e: { target: { name: any; value: any } }) => {
+    const { name, value } = e.target;
+
+    setForm({
+      ...form,
+      [name]: value === "" ? "" : parseFloat(value),
+    });
+  };
+
   const handleSubmit = async () => {
     if (!toUserEmail) return alert("Please enter lender email");
 
@@ -38,7 +47,7 @@ const LoanApplication: React.FC<Props> = ({}) => {
       setLoading(true);
 
       await axios.post(
-        "http://localhost:4000/api/loan/apply",
+        "http://localhost:5001/api/loan/apply",
         {
           toUserEmail,
           customerData: form,
@@ -184,9 +193,10 @@ const LoanApplication: React.FC<Props> = ({}) => {
             <input
               name="loan_percent_income"
               type="number"
+              step="any"
               value={form.loan_percent_income || ""}
               placeholder="e.g. 0.2 for 20%"
-              onChange={handleChange}
+              onChange={handleChange1}
               className={inputClass}
             />
           </div>

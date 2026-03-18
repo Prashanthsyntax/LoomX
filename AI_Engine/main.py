@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI # type: ignore
 from routers import ai_advisor
 
 app = FastAPI()
