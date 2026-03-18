@@ -33,7 +33,7 @@ LoomX is a full-stack application that evaluates loan applications using an AI m
 
 ## 📁 Project Structure
 
-```
+```bash
 LoomX/
 │
 ├── client/        # React Frontend (Vite)
@@ -65,7 +65,7 @@ python app.py
 
 ✅ Runs on:
 
-```
+```bash
 http://127.0.0.1:5000
 ```
 
@@ -81,7 +81,7 @@ npm run dev
 
 ✅ Runs on:
 
-```
+```bash
 http://localhost:5001
 ```
 
@@ -97,7 +97,7 @@ npm run dev
 
 ✅ Runs on:
 
-```
+```bash
 http://localhost:5173
 ```
 
@@ -109,7 +109,7 @@ http://localhost:5173
 2. Backend stores loan in MongoDB
 3. Backend calls AI Flask API:
 
-   ```
+   ```bash
    POST /api/ai/predict
    ```
 
@@ -157,7 +157,7 @@ http://localhost:5173
 
 ### Model Warning (XGBoost)
 
-```
+```bash
 UserWarning: loading serialized model from older version
 ```
 
@@ -176,7 +176,7 @@ model.save_model("model.json")
 * Check Flask server is running
 * Verify URL:
 
-```
+```bash
 http://127.0.0.1:5000/api/ai/predict
 ```
 
