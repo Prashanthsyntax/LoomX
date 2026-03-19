@@ -18,6 +18,7 @@ import Profile from "./pages/dashboard/Profile";
 import AICreditAdvisor from "./pages/dashboard/AICreditAdvisor";
 import { AuthProvider } from "./auth/AuthProvider";
 import ProtectedRoute from "./auth/ProtectedRoute";
+import RegisterPage from "./pages/auth/RegisterPage";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
 
         {/* Auth page */}
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Protected Dashboard */}
         <Route

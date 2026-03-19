@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { useState } from "react";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
@@ -23,16 +23,13 @@ const AuthPage = () => {
 
       setLoading(true);
 
-      const response = await fetch(
-        `${API_URL}/api/users/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ email, password })
-        }
-      );
+      const response = await fetch(`${API_URL}/api/users/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
 
@@ -44,7 +41,6 @@ const AuthPage = () => {
 
       login(data.user, data.token);
       navigate("/dashboard");
-
     } catch (error) {
       console.error(error);
       alert("Server error");
@@ -107,9 +103,21 @@ const AuthPage = () => {
         >
           {loading ? "Signing in..." : "Continue"}
           {!loading && (
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition" />
+            <ArrowRight
+              size={16}
+              className="group-hover:translate-x-1 transition"
+            />
           )}
         </button>
+        <p className="text-center text-sm text-white/40">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-pink-400 hover:text-pink-300 transition"
+          >
+            Sign up
+          </Link>
+        </p>
       </div>
     </div>
   );
